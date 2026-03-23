@@ -1,4 +1,4 @@
-source('main.R')
+source('/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/main.R')
 library('testthat')
 
 
@@ -21,7 +21,7 @@ test_tib <- test_data %>%
   mutate(volc_plot_status = c('UP', rep('NS', 2), 'DOWN', rep('NS', 2)))
 
 describe('make_se()', {
-  se <- make_se('data/verse_counts.tsv', 'data/sample_metadata.csv', c('vP0', 'vAd'))
+  se <- make_se('/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/data/verse_counts.tsv', '/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/data/sample_metadata.csv', c('vP0', 'vAd'))
   
   it("returns a SummarizedExperiment object", {
     expect_true(class(se) == "SummarizedExperiment")
@@ -38,7 +38,7 @@ describe('make_se()', {
 })
 
 describe("return_deseq_res()", {
-  se <- make_se('data/verse_counts.tsv', 'data/sample_metadata.csv', c('vP0', 'vAd'))
+  se <- make_se('/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/data/verse_counts.tsv', '/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/data/sample_metadata.csv', c('vP0', 'vAd'))
   deseq2_results <- return_deseq_res(se, ~timepoint)
   
   it("returns a list of the DESeq2 results and the dds object", {
