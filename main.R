@@ -101,15 +101,13 @@ label_res <- function(deseq2_res, padj_threshold) {
   res_tbl <- as.data.frame(deseq2_res) %>%
     tibble::rownames_to_column(var = "genes") %>%
     tibble::as_tibble() %>%
-    dplyr::filter(!is.na(log2FoldChange), !is.na(padj)) %>%
     dplyr::mutate(
       volc_plot_status = dplyr::case_when(
-        padj < padj_threshold & log2FoldChange > 0 ~ "UP",
-        padj < padj_threshold & log2FoldChange < 0 ~ "DOWN",
+        !is.na(padj) & padj < padj_threshold & log2FoldChange > 0 ~ "UP",
+        !is.na(padj) & padj < padj_threshold & log2FoldChange < 0 ~ "DOWN",
         TRUE ~ "NS"
       )
-    ) %>%
-    dplyr::select(genes, volc_plot_status, log2FoldChange, padj, baseMean, lfcSE, stat, pvalue)
+    )
   
   return(res_tbl)
 }

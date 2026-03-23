@@ -198,7 +198,7 @@ fgsea_results <- run_fgsea('data/m2.cp.v2023.1.Mm.symbols.gmt', rnk_list, 15, 50
 
 ```{r, fgsea results, echo=FALSE}
 #Display the results of the fgsea in a tibble sorted by padj (ascending)
-fgsea_results %>% as.tibble %>% 
+fgsea_results %>% as_tibble %>% 
   arrange(padj)
 ```
 ## 9. Plotting the top ten positive NES and top ten negative NES pathways
@@ -206,15 +206,6 @@ fgsea_results %>% as.tibble %>%
 To make a quick visualization of these GSEA results, make a barchart for the
 pathways with the top ten most positive and top ten most negative NES scores.
 Color the bars by whether they have a positive or negative NES.
-```{r}
-nrow(fgsea_results)
-head(fgsea_results)
-summary(fgsea_results$NES)
-sum(!is.na(fgsea_results$NES) & fgsea_results$NES > 0)
-sum(!is.na(fgsea_results$NES) & fgsea_results$NES < 0)
-```
-
-
 
 ```{r, fgsea results plot, echo=FALSE, fig.cap = caption_9, fig.width=16, fig.height=12}
 #Plot the top ten pathways with both positive and negative NES (20 total)
@@ -223,7 +214,3 @@ fgsea_plot <- top_pathways(fgsea_results, 10)
 fgsea_plot
 
 ```
-```{r}
-
-```
-
