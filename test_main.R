@@ -61,7 +61,7 @@ describe("label_res()", {
 })
 
 describe("DESeq2 results return the same directionality for most significant genes", {
-  se <- make_se('data/verse_counts.tsv', 'data/sample_metadata.csv', c('vP0', 'vAd'))
+  se <- make_se('/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/data/verse_counts.tsv', '/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/data/sample_metadata.csv', c('vP0', 'vAd'))
   dds <- DESeqDataSet(se, design = ~timepoint)
   dds <- DESeq(dds)
   res <- results(dds) %>% as_tibble(rownames='genes')
@@ -87,7 +87,7 @@ describe("DESeq2 results return the same directionality for most significant gen
 })
 
 describe("make_ranked_log2fc()", {
-  results <- make_ranked_log2fc(test_tib, 'data/id2gene.txt')
+  results <- make_ranked_log2fc(test_tib, '/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/data/id2gene.txt')
   
   symbols <- c('4933401J01Rik', 'Gm37180', 'Xkr4', 'Gm18956', 'Gm37363', 'Gm26206')
   log2fc <- c(8,5,3,-4,-6,-8)
@@ -99,13 +99,13 @@ describe("make_ranked_log2fc()", {
 })
 
 describe("run_fgsea()", {
-  se <- make_se('data/verse_counts.tsv', 'data/sample_metadata.csv', c('vP0', 'vAd'))
+  se <- make_se('/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/data/verse_counts.tsv', '/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/data/sample_metadata.csv', c('vP0', 'vAd'))
   dds <- DESeqDataSet(se, design = ~timepoint)
   dds <- DESeq(dds)
   res <- results(dds) %>% as_tibble(rownames='genes')
-  rnk_list <- make_ranked_log2fc(res, 'data/id2gene.txt')
+  rnk_list <- make_ranked_log2fc(res, '/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/data/id2gene.txt')
   
-  fgsea_res <- run_fgsea('data/m2.cp.v2023.1.Mm.symbols.gmt', rnk_list, 15, 500)
+  fgsea_res <- run_fgsea('/projectnb/bf530/students/xjin4/assignment-5-Jessie0625he/data/m2.cp.v2023.1.Mm.symbols.gmt', rnk_list, 15, 500)
   
   it("returns a tibble of the fgsea output", {
     expect_true(is_tibble(fgsea_res))

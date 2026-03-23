@@ -20,7 +20,7 @@ library('fgsea')
 #' @examples se <- make_se('verse_counts.tsv', 'sample_metadata.csv', c('vP0', 'vAd'))
 make_se <- function(counts_csv, metafile_csv, selected_times) {
   # read counts table
-  counts_df <- readr::read_delim(counts_csv, delim = "\t")
+  counts_df <- readr::read_delim(counts_csv, delim = "\t", show_col_types = FALSE)
   
   # read metadata file
   meta_data <- read.csv(metafile_csv, header = TRUE, sep = ",")
@@ -99,15 +99,18 @@ return_deseq_res <- function(se, design) {
 #' @examples labeled_results <- label_res(res, .10)
 label_res <- function(deseq2_res, padj_threshold) {
   res_tbl <- as.data.frame(deseq2_res) %>%
-    rownames_to_column(var = "genes") %>%
-    as_tibble() %>%
-    mutate(
-      volc_plot_status = case_when(
+    tibble::rownames_to_column(var = "genes") %>%
+    tibble::as_tibble() %>%
+    dplyr::filter(!is.na(log2FoldChange), !is.na(padj)) %>%
+    dplyr::mutate(
+      volc_plot_status = dplyr::case_when(
         padj < padj_threshold & log2FoldChange > 0 ~ "UP",
         padj < padj_threshold & log2FoldChange < 0 ~ "DOWN",
         TRUE ~ "NS"
       )
-    )
+    ) %>%
+    dplyr::select(genes, volc_plot_status, log2FoldChange, padj, baseMean, lfcSE, stat, pvalue)
+  
   return(res_tbl)
 }
 
@@ -256,20 +259,17 @@ plot_volcano <- function(labeled_results) {
 #' @examples rnk_list <- make_ranked_log2fc(labeled_results, 'data/id2gene.txt')
 
 make_ranked_log2fc <- function(labeled_results, id2gene_path) {
-  # read Ensembl-to-symbol mapping
-  id2gene <- read.csv(id2gene_path, header = FALSE, sep = "\t") 
+  id2gene <- read.csv(id2gene_path, header = FALSE, sep = "\t", stringsAsFactors = FALSE)
   colnames(id2gene) <- c("genes", "mgi_symbol")
   
-  # keep gene ID and log2FC
-  ranked_df <- as.data.frame(labeled_results)[, c("genes", "log2FoldChange")] %>% 
-               left_join(id2gene, by = "genes") %>% 
-                filter(!is.na(mgi_symbol), mgi_symbol != "", !is.na(log2FoldChange)) %>%
-                distinct(mgi_symbol, .keep_all = TRUE) %>% 
-                arrange(desc(log2FoldChange))
-  # make named vector
+  ranked_df <- as.data.frame(labeled_results)[, c("genes", "log2FoldChange")] %>%
+    dplyr::left_join(id2gene, by = "genes") %>%
+    dplyr::filter(!is.na(mgi_symbol), mgi_symbol != "", !is.na(log2FoldChange)) %>%
+    dplyr::arrange(dplyr::desc(log2FoldChange)) %>%
+    dplyr::distinct(mgi_symbol, .keep_all = TRUE)
+  
   rnk_list <- ranked_df$log2FoldChange
   names(rnk_list) <- ranked_df$mgi_symbol
-  
   return(rnk_list)
 }
 
@@ -295,10 +295,9 @@ run_fgsea <- function(gmt_file_path, rnk_list, min_size, max_size) {
     stats = rnk_list,
     minSize = min_size,
     maxSize = max_size
-  ) %>%
-    as_tibble() %>%
-    arrange(desc(NES))
+  )
   
+  fgsea_results <- tibble::as_tibble(fgsea_results)
   return(fgsea_results)
 }
   

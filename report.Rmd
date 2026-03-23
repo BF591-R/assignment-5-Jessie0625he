@@ -95,11 +95,11 @@ labeled_results
 
 ```{r code block for descriptive captions}
 
-caption_4 <- 'Descriptive caption for part 4'
-caption_5 <- 'Descriptive caption for part 5'
-caption_6 <- 'Descriptive caption for part 6'
-caption_7 <- 'Descriptive caption for part 7'
-caption_9 <- 'Descriptive caption for part 9'
+caption_4 <- 'Diagnostic plot of the raw p-values for all genes'
+caption_5 <- 'Plotting the LogFoldChanges for differentially expressed genes'
+caption_6 <- 'Plotting the normalized counts of differentially expressed genes'
+caption_7 <- 'Volcano Plot to visualize differential expression results'
+caption_9 <- 'Plotting the top ten positive NES and top ten negative NES pathways'
 
 ```
 
